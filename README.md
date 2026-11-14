@@ -4,7 +4,7 @@
 
 ## 运行
 
-Node.js 22.22.1，依赖仅为标准库，package-lock.json 不含网络依赖。无需安装数据库或访问外站。
+Node.js 22.23.4，依赖仅为标准库，package-lock.json 不含网络依赖。无需安装数据库或访问外站。
 
 ```sh
 npm test
