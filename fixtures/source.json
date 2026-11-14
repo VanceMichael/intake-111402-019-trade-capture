@@ -1,0 +1,98 @@
+{
+  "exchanges": [
+    {
+      "path": "/logon",
+      "method": "POST",
+      "body": {
+        "sessionEpoch": "s1"
+      },
+      "requires": {},
+      "sets": {
+        "connected": true
+      },
+      "status": 200,
+      "query": {}
+    },
+    {
+      "path": "/messages",
+      "method": "GET",
+      "body": {
+        "items": [
+          "OD1GSVguNC40ATk9NDkBMzU9QUUBMzQ9MQE0OT1QQVJUTkVSATU2PUxPQ0FMATU3MT1UMQEzMT0xMAEzMj01ATEwPTAyOQE=",
+          "OD1GSVguNC40ATk9NDkBMzU9QUUBMzQ9MgE0OT1QQVJUTkVSATU2PUxPQ0FMATU3MT1UMgEzMT0xMAEzMj01ATEwPTAzMQE="
+        ]
+      },
+      "requires": {
+        "connected": true
+      },
+      "sets": {},
+      "status": 200,
+      "query": {
+        "session": "s1"
+      }
+    },
+    {
+      "path": "/resend",
+      "method": "POST",
+      "body": {
+        "accepted": true
+      },
+      "requires": {},
+      "sets": {},
+      "status": 200,
+      "query": {}
+    }
+  ],
+  "cases": {
+    "gap-and-resend": [
+      {
+        "path": "/messages",
+        "method": "GET",
+        "body": {
+          "items": [
+            "OD1GSVguNC40ATk9NDkBMzU9QUUBMzQ9MQE0OT1QQVJUTkVSATU2PUxPQ0FMATU3MT1UMQEzMT0xMAEzMj01ATEwPTAyOQE=",
+            "OD1GSVguNC40ATk9NDkBMzU9QUUBMzQ9NAE0OT1QQVJUTkVSATU2PUxPQ0FMATU3MT1UMwEzMT0xMQEzMj01ATEwPTAzNQE=",
+            "OD1GSVguNC40ATk9NzYBMzU9QUUBMzQ9MgE0OT1QQVJUTkVSATU2PUxPQ0FMATQzPVkBMTIyPTIwMjYxMTAxLTAwOjAwOjAwATU3MT1UMgEzMT0xMAEzMj01ATEwPTA2MgE=",
+            "OD1GSVguNC40ATk9NDEBMzU9NAEzND0zATQ5PVBBUlRORVIBNTY9TE9DQUwBMTIzPVkBMzY9NAExMD0xNDYB"
+          ]
+        },
+        "requires": {},
+        "sets": {},
+        "status": 200,
+        "query": {
+          "session": "s1"
+        }
+      }
+    ],
+    "reset": [
+      {
+        "path": "/logon",
+        "method": "POST",
+        "body": {
+          "sessionEpoch": "s2"
+        },
+        "requires": {},
+        "sets": {
+          "connected": true
+        },
+        "status": 200,
+        "query": {}
+      },
+      {
+        "path": "/messages",
+        "method": "GET",
+        "body": {
+          "items": [
+            "OD1GSVguNC40ATk9NTYBMzU9QUUBMzQ9MQE0OT1QQVJUTkVSATU2PUxPQ0FMATU3MT1UNAEzMT0xMAEzMj01ATU3Mj1UMQExMD0xMjcB"
+          ]
+        },
+        "requires": {},
+        "sets": {},
+        "status": 200,
+        "query": {
+          "session": "s2"
+        }
+      }
+    ]
+  }
+}
