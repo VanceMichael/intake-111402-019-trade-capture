@@ -10,4 +10,12 @@ POST /logon 返回 sessionEpoch；GET /messages?session=... 返回 base64 原始
 
 ## 收存约定
 
-当前适配器 collect(client) 返回带字符串 id 的原件行。Archive.put(rows, provenance) 按实际内容和来源生成摘要，保留不同内容。该原件归档不自动决定业务当前值、引用已解析、区间完整或远端已确认；业务投影与领取状态需要各自维护。GET /records 保留兼容，不将未知状态伪造为成功。
+兼容入口 collect(client) 返回带字符串 id 的原件行。Archive.put(rows, provenance) 按实际内容和来源生成摘要，保留不同内容；provenance 不随来源端口变化，进程重启后同一原件保持幂等。该原件归档不自动决定业务当前值、引用已解析、区间完整或远端已确认；业务投影与领取状态由 Intake 各自维护。
+
+Intake（src/intake.mjs，落盘 intake.json）把三类身份分开：
+
+- 传输身份：sessionEpoch + MsgSeqNum(34)。每收到一个新序号才登记，重复领取只计 duplicates；nextExpectedSeqNum 是第一个未实际收到的序号，仅在批次原子落盘成功后推进。
+- 业务身份：TradeReportID(571)。PossDupFlag(43=Y) 重送不新增成交，只累加 observations；新业务身份即使数值相同也独立保留；同身份内容变化在 versions 留痕。
+- 更正关系：TradeReportRefID(572) -> TradeReportID(571)，引用先于原报到达时进入 pendingLinks，原报到达后转为 resolvedLinks，且可跨 sessionEpoch 关联。
+
+SequenceReset/GapFill（35=4、123=Y、NewSeqNo 36）只在传输层登记序号跳过，不写入 reports。会话重置产生新 sessionEpoch 时编号独立，不与旧会话拼接。发现未被 GapFill 解释的缺号时，先持久化补发意图（resends）再 POST /resend；重启后同区间不重复请求。GET /status 返回 sessions（已收序号、GapFill、待补区间、补发记录）、businessReports、pendingLinks/resolvedLinks 与事件；未配置 intake 时该端点返回 404，不将未知状态伪造为成功。GET /records 保留兼容。

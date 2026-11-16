@@ -10,6 +10,6 @@
     "test": "node --test",
     "start": "node src/main.mjs",
     "demo": "node scripts/demo.mjs",
-    "check": "node --check src/reader.mjs && node --check src/source.mjs"
+    "check": "node --check src/reader.mjs && node --check src/fix.mjs && node --check src/intake.mjs && node --check src/runner.mjs && node --check src/source.mjs"
   }
 }
